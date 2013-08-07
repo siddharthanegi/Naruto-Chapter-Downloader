@@ -24,11 +24,8 @@ public class Downloader {
 	private static final String BASE_URL = "http://www.mangapanda.com/naruto/";
 	private static int latestChapterNumber;
 
-	/**
-	 * @param args
-	 */
+
 	public void download() {
-		// TODO Auto-generated method stub
 
 		int i = 1;
 
@@ -56,16 +53,16 @@ public class Downloader {
 			}
 
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		}
 	}
 
 	private static void downloadPage(URL imgSrcUrl, int i) throws IOException {
-		// TODO Auto-generated method stub
+		
 		HttpURLConnection srcConnection = (HttpURLConnection) imgSrcUrl
 				.openConnection();
 		srcConnection.setConnectTimeout(15 * 1000);
