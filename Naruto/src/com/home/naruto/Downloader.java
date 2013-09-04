@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,47 +23,14 @@ import org.jsoup.select.Elements;
 public class Downloader {
 
 	private static final String NARUTO_PAGE = "http://www.mangapanda.com/93/naruto.html";
-	private static final String BASE_URL = "http://www.mangapanda.com/naruto/";
+	private static final String BASE_URL = "http://www.mangapanda.com";
 	private static int latestChapterNumber;
+	private  Map<String,String> chapterMap;
+	private String chapter;
 
+	
 
-	public void download() {
-
-		int i = 1;
-
-		try {
-			getLatestChapterNumber();
-			String url = BASE_URL + latestChapterNumber + "/" + i;
-			Document doc = Jsoup.connect(url).timeout(5 * 1000).get();
-			Element img = doc.getElementById("img");
-			Elements pageNo = doc.select("select > option:last-child");
-			int maxPages = Integer.parseInt(pageNo.html());
-
-			URL imgSrcUrl = new URL(img.attr("src"));
-			File dir=new File("Naruto_Chapter");
-			dir.mkdir();
-			downloadPage(imgSrcUrl, i);
-
-			for (i = 2; i <= maxPages; i++) {
-				url = BASE_URL + latestChapterNumber + "/" + i;
-				doc = Jsoup.connect(url).timeout(5 * 1000).get();
-
-				img = doc.getElementById("img");
-				System.out.print("*");
-				imgSrcUrl = new URL(img.attr("src"));
-				downloadPage(imgSrcUrl, i);
-			}
-
-		} catch (MalformedURLException e) {
-			
-			e.printStackTrace();
-		} catch (IOException e) {
-		
-			e.printStackTrace();
-		}
-	}
-
-	private static void downloadPage(URL imgSrcUrl, int i) throws IOException {
+	private void downloadPage(URL imgSrcUrl, int i) throws IOException {
 		
 		HttpURLConnection srcConnection = (HttpURLConnection) imgSrcUrl
 				.openConnection();
@@ -69,20 +38,85 @@ public class Downloader {
 		ReadableByteChannel rbc = Channels.newChannel(srcConnection
 				.getInputStream());
 		
-		FileOutputStream fos = new FileOutputStream("Naruto_Chapter/Naruto-" + i + ".jpg");
+		FileOutputStream fos = new FileOutputStream(chapter+"/Naruto-" + i + ".jpg");
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		fos.close();
 	}
 
-	private static void getLatestChapterNumber() throws IOException {
+	public Integer getLatestChapterNumber() throws IOException {
 
 		Document doc = Jsoup.connect(NARUTO_PAGE).timeout(15 * 1000).get();
 		Elements latestChapterElement = doc.getElementById("latestchapters")
 				.select("ul > li:first-child >a");
-		// .select("ul > li:first-child");
+		
 		String chapterNo = latestChapterElement.html().substring(7);
-		System.out.println(chapterNo);
 		latestChapterNumber = Integer.parseInt(chapterNo);
-
+		System.out.println(latestChapterNumber);
+		return latestChapterNumber;
+		
 	}
+	public Vector<String> getChapterList() throws IOException{
+		
+		Document doc = Jsoup.connect(NARUTO_PAGE).timeout(15 * 1000).get();
+		Element chapterListDiv=doc.getElementById("listing");
+		Elements urls=chapterListDiv.select("a[href]");
+		chapterMap=new HashMap<String,String>();
+		Vector<String> vector=new Vector<String>();
+		for(Element e: urls){
+			chapterMap.put(e.html(), e.attr("href"));
+			vector.add(e.html());
+			
+		}
+		return vector;
+		
+		
+	}
+
+	public Map<String, String> getChapterMap() {
+		return chapterMap;
+	}
+	
+	public void downloadChapter(String chapterFromUI){
+		
+		chapter=chapterFromUI;
+		String urlSuffix=chapterMap.get(chapter);
+//		System.out.println(urlSuffix);
+		int i=1;
+	
+		String url = BASE_URL + urlSuffix;
+		Document doc;
+		try {
+			doc = Jsoup.connect(url).timeout(2 * 1000).get();
+			Element img = doc.getElementById("img");
+			Elements pageNo = doc.select("select > option:last-child");
+			int maxPages = Integer.parseInt(pageNo.html());
+			System.out.println(maxPages);
+			URL imgSrcUrl = new URL(img.attr("src"));
+//			System.out.println(imgSrcUrl);
+			File dir=new File(chapter);
+			dir.mkdir();
+			downloadPage(imgSrcUrl, i);
+			
+			for (i = 2; i <=maxPages; i++) {
+				
+				Element imgHolder=doc.getElementById("imgholder");
+				String nextSuffix=imgHolder.select("a[href]").attr("href");
+				url = BASE_URL + nextSuffix;
+				doc = Jsoup.connect(url).timeout(2 * 1000).get();
+				img = doc.getElementById("img");
+    			System.out.print("*");
+				imgSrcUrl = new URL(img.attr("src"));
+				downloadPage(imgSrcUrl, i);
+				
+				
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+
+	
+		
+	
+	}	
 }
