@@ -24,11 +24,14 @@ public class Downloader {
 
 	private static final String NARUTO_PAGE = "http://www.mangapanda.com/93/naruto.html";
 	private static final String BASE_URL = "http://www.mangapanda.com";
+	private  static String chapterLocation;
 	private static int latestChapterNumber;
 	private  Map<String,String> chapterMap;
 	private String chapter;
 
-	
+	public Downloader(){
+		chapterLocation="";
+			}
 
 	private void downloadPage(URL imgSrcUrl, int i) throws IOException {
 		
@@ -38,7 +41,7 @@ public class Downloader {
 		ReadableByteChannel rbc = Channels.newChannel(srcConnection
 				.getInputStream());
 		
-		FileOutputStream fos = new FileOutputStream(chapter+"/Naruto-" + i + ".jpg");
+		FileOutputStream fos = new FileOutputStream(chapterLocation+"/"+chapter+"/Naruto-" + i + ".jpg");
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		fos.close();
 	}
@@ -86,23 +89,23 @@ public class Downloader {
 		String url = BASE_URL + urlSuffix;
 		Document doc;
 		try {
-			doc = Jsoup.connect(url).timeout(2 * 1000).get();
+			doc = Jsoup.connect(url).timeout(5 * 1000).get();
 			Element img = doc.getElementById("img");
 			Elements pageNo = doc.select("select > option:last-child");
 			int maxPages = Integer.parseInt(pageNo.html());
 			System.out.println(maxPages);
 			URL imgSrcUrl = new URL(img.attr("src"));
 //			System.out.println(imgSrcUrl);
-			File dir=new File(chapter);
+			File dir=new File(chapterLocation+"/"+chapter);
 			dir.mkdir();
 			downloadPage(imgSrcUrl, i);
 			
-			for (i = 2; i <=maxPages; i++) {
+			for (i = 2; i <=3; i++) {
 				
 				Element imgHolder=doc.getElementById("imgholder");
 				String nextSuffix=imgHolder.select("a[href]").attr("href");
 				url = BASE_URL + nextSuffix;
-				doc = Jsoup.connect(url).timeout(2 * 1000).get();
+				doc = Jsoup.connect(url).timeout(5 * 1000).get();
 				img = doc.getElementById("img");
     			System.out.print("*");
 				imgSrcUrl = new URL(img.attr("src"));
@@ -118,5 +121,9 @@ public class Downloader {
 	
 		
 	
+	}
+
+	public  void setChapterLocation(String chapterLocation) {
+		Downloader.chapterLocation = chapterLocation;
 	}	
 }

@@ -13,6 +13,7 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,6 +32,7 @@ public class NewGui extends JFrame {
 	
 	public NewGui(){
 		downloader=new Downloader();
+		selectedChapter="Naruto 1";
 		initUI();
 	}
 	private void initUI() {
@@ -67,10 +69,11 @@ public class NewGui extends JFrame {
 		JButton downloadBtn=new JButton("Download");
 		downloadBtn.addActionListener(new DownloadButtonListener());
 		GridBagConstraints downloadBtnCons=new GridBagConstraints();
-		downloadBtnCons.insets=new Insets(0,5,0,5);
+		downloadBtnCons.insets=new Insets(5,5,0,5);
 		downloadBtnCons.gridx=3;
-		downloadBtnCons.gridy=0;
-		downloadBtnCons.weightx = 0.0;
+		downloadBtnCons.gridy=1;
+		downloadBtnCons.gridwidth=1;
+		
 		pane.add(downloadBtn,downloadBtnCons);
 		
 		JLabel copyright=new JLabel("© Siddhartha Negi");
@@ -93,12 +96,35 @@ public class NewGui extends JFrame {
 			}
 		});
 		GridBagConstraints latestCons=new GridBagConstraints();
-		latestCons.insets=new Insets(5,5,0,5);
+		latestCons.insets=new Insets(5,5,0,0);
 		latestCons.gridx=0;
 		latestCons.gridy=1;
-		latestCons.gridwidth=4;
+		latestCons.gridwidth=3;
 		latestCons.fill=GridBagConstraints.HORIZONTAL;
 		pane.add(latestChapterBtn,latestCons);
+		
+		final JFileChooser directoryChooser=new JFileChooser();
+		directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		JButton directoryButton=new JButton("Location");
+		directoryButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int returnVal = directoryChooser.showOpenDialog(NewGui.this);
+				if(returnVal==JFileChooser.APPROVE_OPTION){
+					String location=directoryChooser.getSelectedFile().getAbsolutePath();
+				 downloader.setChapterLocation(location.replace('\\','/'));
+				}
+				
+			}
+		});
+		GridBagConstraints directoryCons=new GridBagConstraints();
+		directoryCons.gridx=3;
+		directoryCons.gridy=0;
+		directoryCons.gridwidth=1;
+		directoryCons.fill=GridBagConstraints.HORIZONTAL;
+		directoryCons.insets=new Insets(0,5,0,5);
+		pane.add(directoryButton,directoryCons);
 		
 		
 		setTitle("Naruto Chapter Downloader");
