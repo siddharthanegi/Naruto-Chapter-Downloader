@@ -100,7 +100,7 @@ public class Downloader {
 			dir.mkdir();
 			downloadPage(imgSrcUrl, i);
 			
-			for (i = 2; i <=3; i++) {
+			for (i = 2; i <=maxPages; i++) {
 				
 				Element imgHolder=doc.getElementById("imgholder");
 				String nextSuffix=imgHolder.select("a[href]").attr("href");
