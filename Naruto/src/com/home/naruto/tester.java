@@ -6,13 +6,16 @@ public class tester {
 
 	/**
 	 * @param args
+	 * @throws ClassNotFoundException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ClassNotFoundException {
 		// TODO Auto-generated method stub
 
-		Downloader down=new Downloader();
+		ChapterList ch=new ChapterList();
 		try {
-			down.getChapterList();
+			ch.getChapterListFromWebsite();
+			ch.serializeHashMap();
+			ch.getChapterListFromSerializedObject();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

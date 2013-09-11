@@ -27,11 +27,13 @@ public class NewGui extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private Downloader downloader;
+	private ChapterList chapterListObj;
 	private String selectedChapter;
 	private String latestChapter;
 
 	public NewGui() {
 		downloader = new Downloader();
+		chapterListObj=new ChapterList();
 		selectedChapter = "Naruto 1";
 		initUI();
 	}
@@ -52,12 +54,15 @@ public class NewGui extends JFrame {
 		Vector<String> chapterList = null;
 
 		try {
-			chapterList = downloader.getChapterList();
+			chapterList = chapterListObj.getChapterListFromSerializedObject();
 			latestChapter = chapterList.lastElement();
 		} catch (IOException e) {
 
 			System.out.println("Could not get chapter list !");
 			e.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		JComboBox chapterListComboBox = new JComboBox(chapterList);
 		chapterListComboBox.addActionListener(new ComboBoxListener());

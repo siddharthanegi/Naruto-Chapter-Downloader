@@ -26,7 +26,7 @@ public class Downloader {
 	private static final String BASE_URL = "http://www.mangapanda.com";
 	private  static String chapterLocation;
 	private static int latestChapterNumber;
-	private  Map<String,String> chapterMap;
+	private static Map<Integer,String> chapterMap;
 	private String chapter;
 
 	public Downloader(){
@@ -58,32 +58,30 @@ public class Downloader {
 		return latestChapterNumber;
 		
 	}
-	public Vector<String> getChapterList() throws IOException{
-		
-		Document doc = Jsoup.connect(NARUTO_PAGE).timeout(15 * 1000).get();
-		Element chapterListDiv=doc.getElementById("listing");
-		Elements urls=chapterListDiv.select("a[href]");
-		chapterMap=new HashMap<String,String>();
-		Vector<String> vector=new Vector<String>();
-		for(Element e: urls){
-			chapterMap.put(e.html(), e.attr("href"));
-			vector.add(e.html());
-			
-		}
-		return vector;
-		
-		
-	}
+//	public Vector<String> getChapterList() throws IOException{
+//		
+//		Document doc = Jsoup.connect(NARUTO_PAGE).timeout(15 * 1000).get();
+//		Element chapterListDiv=doc.getElementById("listing");
+//		Elements urls=chapterListDiv.select("a[href]");
+//		chapterMap=new HashMap<String,String>();
+//		Vector<String> vector=new Vector<String>();
+//		for(Element e: urls){
+//			chapterMap.put(e.html(), e.attr("href"));
+//			vector.add(e.html());
+//			
+//		}
+//		System.out.println(chapterMap);
+//		return vector;
+//		
+//		
+//	}
 
-	public Map<String, String> getChapterMap() {
-		return chapterMap;
-	}
-	
+
 	public void downloadChapter(String chapterFromUI){
 		
 		chapter=chapterFromUI;
-		String urlSuffix=chapterMap.get(chapter);
-//		System.out.println(urlSuffix);
+		String urlSuffix=chapterMap.get(Integer.parseInt(chapterFromUI.substring(7)));
+		System.out.println(urlSuffix);
 		int i=1;
 	
 		String url = BASE_URL + urlSuffix;
@@ -100,7 +98,7 @@ public class Downloader {
 			dir.mkdir();
 			downloadPage(imgSrcUrl, i);
 			
-			for (i = 2; i <=maxPages; i++) {
+			for (i = 2; i <=2; i++) {
 				
 				Element imgHolder=doc.getElementById("imgholder");
 				String nextSuffix=imgHolder.select("a[href]").attr("href");
@@ -125,5 +123,9 @@ public class Downloader {
 
 	public  void setChapterLocation(String chapterLocation) {
 		Downloader.chapterLocation = chapterLocation;
+	}
+
+	public static void setChapterMap(Map<Integer, String> chapterMap) {
+		Downloader.chapterMap = chapterMap;
 	}	
 }
