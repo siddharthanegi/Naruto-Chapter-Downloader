@@ -7,9 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,11 +33,9 @@ public class Downloader {
 
 	private void downloadPage(URL imgSrcUrl, int i) throws IOException {
 		
-		HttpURLConnection srcConnection = (HttpURLConnection) imgSrcUrl
-				.openConnection();
+		HttpURLConnection srcConnection = (HttpURLConnection) imgSrcUrl.openConnection();
 		srcConnection.setConnectTimeout(15 * 1000);
-		ReadableByteChannel rbc = Channels.newChannel(srcConnection
-				.getInputStream());
+		ReadableByteChannel rbc = Channels.newChannel(srcConnection.getInputStream());
 		
 		FileOutputStream fos = new FileOutputStream(chapterLocation+"/"+chapter+"/Naruto-" + i + ".jpg");
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -58,24 +54,6 @@ public class Downloader {
 		return latestChapterNumber;
 		
 	}
-//	public Vector<String> getChapterList() throws IOException{
-//		
-//		Document doc = Jsoup.connect(NARUTO_PAGE).timeout(15 * 1000).get();
-//		Element chapterListDiv=doc.getElementById("listing");
-//		Elements urls=chapterListDiv.select("a[href]");
-//		chapterMap=new HashMap<String,String>();
-//		Vector<String> vector=new Vector<String>();
-//		for(Element e: urls){
-//			chapterMap.put(e.html(), e.attr("href"));
-//			vector.add(e.html());
-//			
-//		}
-//		System.out.println(chapterMap);
-//		return vector;
-//		
-//		
-//	}
-
 
 	public void downloadChapter(String chapterFromUI){
 		
@@ -98,7 +76,7 @@ public class Downloader {
 			dir.mkdir();
 			downloadPage(imgSrcUrl, i);
 			
-			for (i = 2; i <=2; i++) {
+			for (i = 2; i <=maxPages; i++) {
 				
 				Element imgHolder=doc.getElementById("imgholder");
 				String nextSuffix=imgHolder.select("a[href]").attr("href");

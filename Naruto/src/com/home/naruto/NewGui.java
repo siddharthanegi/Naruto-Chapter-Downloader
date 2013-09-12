@@ -53,17 +53,10 @@ public class NewGui extends JFrame {
 
 		Vector<String> chapterList = null;
 
-		try {
-			chapterList = chapterListObj.getChapterListFromSerializedObject();
+		
+			chapterList = chapterListObj.getChapterList();
 			latestChapter = chapterList.lastElement();
-		} catch (IOException e) {
-
-			System.out.println("Could not get chapter list !");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		
 		JComboBox chapterListComboBox = new JComboBox(chapterList);
 		chapterListComboBox.addActionListener(new ComboBoxListener());
 		GridBagConstraints chapterListCons = new GridBagConstraints();
