@@ -39,6 +39,7 @@ public class Downloader {
 	public Downloader(){
 		chapterLocation="";
 		pageNameLocaction=new ArrayList<String>();
+		images=new ArrayList<Image>();
 			}
 
 	private void downloadPage(URL imgSrcUrl, int i) throws IOException {
@@ -87,19 +88,21 @@ public class Downloader {
 //			System.out.println(imgSrcUrl);
 			File dir=new File(chapterLocation+"/"+chapter);
 			dir.mkdir();
-			downloadPage(imgSrcUrl, i);
 			
-			for (i = 2; i <=2; i++) {
+			//downloadPage(imgSrcUrl, i);
+			addImages(imgSrcUrl);
+			
+			for (i = 2; i <=maxPages; i++) {
 				
 				Element imgHolder=doc.getElementById("imgholder");
 				String nextSuffix=imgHolder.select("a[href]").attr("href");
 				url = BASE_URL + nextSuffix;
 				doc = Jsoup.connect(url).timeout(7 * 1000).get();
 				img = doc.getElementById("img");
-    			System.out.print("*");
+    			System.out.print("* ");
 				imgSrcUrl = new URL(img.attr("src"));
-				downloadPage(imgSrcUrl, i);
-				//addImages(imgSrcUrl);
+				//downloadPage(imgSrcUrl, i);
+				addImages(imgSrcUrl);
 				
 				
 			}
@@ -115,6 +118,7 @@ public class Downloader {
 	public void addImages(URL imageUrl)
 	{
 		try {
+			System.out.println(imageUrl);
 			images.add(Image.getInstance(imageUrl));
 		} catch (BadElementException e) {
 			

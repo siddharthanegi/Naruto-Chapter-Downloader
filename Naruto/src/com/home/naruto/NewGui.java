@@ -134,7 +134,9 @@ public class NewGui extends JFrame {
 			downloader.setChapterLocation(location.replace('\\', '/'));
 			downloader.downloadChapter(chapter);
 			imagePdf=new ImagePdf();
-			imagePdf.convertToPdf(downloader.getPageNameLocation(),downloader.getChapter());
+			imagePdf.setImages(downloader.getImages());
+			imagePdf.convertToPdf(downloader.getChapter());
+			//imagePdf.convertToPdf(downloader.getPageNameLocation(),downloader.getChapter());
 			
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			JOptionPane.showMessageDialog(null, "Download Complete !");

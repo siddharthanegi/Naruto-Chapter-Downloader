@@ -1,12 +1,7 @@
 package com.home.naruto;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Image;
+import java.net.URL;
 
 
 public class tester {
@@ -15,28 +10,16 @@ public class tester {
 	 * @param args
 	 * @throws ClassNotFoundException 
 	 */
-	public static void main(String[] args) throws ClassNotFoundException {
+	public static void main(String[] args)  {
 		// TODO Auto-generated method stub
 
 		ImagePdf ch=new ImagePdf();
-		List<Image> input=new ArrayList<Image>();
 		try {
-			input.add(Image.getInstance("src/images/naruto_e.jpg"));
-			input.add(Image.getInstance("src/images/naruto_s.jpg"));
-			ch.setImages(input);
-		//	ch.convertToPdf();
-		} catch (BadElementException e) {
-			
-			e.printStackTrace();
+			ch.tp(new URL("http://i999.mangapanda.com/naruto/646/naruto-4446381.jpg"));
 		} catch (MalformedURLException e) {
-		
-			e.printStackTrace();
-		} catch (IOException e) {
-			
-			System.out.println("File not found !");
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-				
-	}
 
+}
 }
