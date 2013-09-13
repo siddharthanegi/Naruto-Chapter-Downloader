@@ -28,6 +28,7 @@ public class NewGui extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private Downloader downloader;
 	private ChapterList chapterListObj;
+	private ImagePdf imagePdf;
 	private String selectedChapter;
 	private String latestChapter;
 
@@ -129,10 +130,12 @@ public class NewGui extends JFrame {
 		int returnVal = directoryChooser.showSaveDialog(NewGui.this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 
-			String location = directoryChooser.getSelectedFile()
-					.getAbsolutePath();
+			String location = directoryChooser.getSelectedFile().getAbsolutePath();
 			downloader.setChapterLocation(location.replace('\\', '/'));
 			downloader.downloadChapter(chapter);
+			imagePdf=new ImagePdf();
+			imagePdf.convertToPdf(downloader.getPageNameLocation(),downloader.getChapter());
+			
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			JOptionPane.showMessageDialog(null, "Download Complete !");
 

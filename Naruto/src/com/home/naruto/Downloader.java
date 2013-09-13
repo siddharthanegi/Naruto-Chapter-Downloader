@@ -4,15 +4,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Image;
 
 /**
  * @author negi_s
@@ -25,10 +31,14 @@ public class Downloader {
 	private  static String chapterLocation;
 	private static int latestChapterNumber;
 	private static Map<Integer,String> chapterMap;
+	private List<String> pageNameLocaction;
 	private String chapter;
+	private List<Image> images;
+	
 
 	public Downloader(){
 		chapterLocation="";
+		pageNameLocaction=new ArrayList<String>();
 			}
 
 	private void downloadPage(URL imgSrcUrl, int i) throws IOException {
@@ -36,7 +46,8 @@ public class Downloader {
 		HttpURLConnection srcConnection = (HttpURLConnection) imgSrcUrl.openConnection();
 		srcConnection.setConnectTimeout(15 * 1000);
 		ReadableByteChannel rbc = Channels.newChannel(srcConnection.getInputStream());
-		
+		String pageNameLoc=chapterLocation+"/"+chapter+"/Naruto-" + i + ".jpg";
+		pageNameLocaction.add(pageNameLoc);
 		FileOutputStream fos = new FileOutputStream(chapterLocation+"/"+chapter+"/Naruto-" + i + ".jpg");
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		fos.close();
@@ -45,8 +56,7 @@ public class Downloader {
 	public Integer getLatestChapterNumber() throws IOException {
 
 		Document doc = Jsoup.connect(NARUTO_PAGE).timeout(15 * 1000).get();
-		Elements latestChapterElement = doc.getElementById("latestchapters")
-				.select("ul > li:first-child >a");
+		Elements latestChapterElement = doc.getElementById("latestchapters").select("ul > li:first-child >a");
 		
 		String chapterNo = latestChapterElement.html().substring(7);
 		latestChapterNumber = Integer.parseInt(chapterNo);
@@ -56,7 +66,10 @@ public class Downloader {
 	}
 
 	public void downloadChapter(String chapterFromUI){
-		
+		System.out.println("Before: "+pageNameLocaction.size());
+		pageNameLocaction.clear();
+		//images.clear();
+		System.out.println("After :" +pageNameLocaction.size());
 		chapter=chapterFromUI;
 		String urlSuffix=chapterMap.get(Integer.parseInt(chapterFromUI.substring(7)));
 		System.out.println(urlSuffix);
@@ -65,7 +78,7 @@ public class Downloader {
 		String url = BASE_URL + urlSuffix;
 		Document doc;
 		try {
-			doc = Jsoup.connect(url).timeout(5 * 1000).get();
+			doc = Jsoup.connect(url).timeout(7 * 1000).get();
 			Element img = doc.getElementById("img");
 			Elements pageNo = doc.select("select > option:last-child");
 			int maxPages = Integer.parseInt(pageNo.html());
@@ -76,16 +89,17 @@ public class Downloader {
 			dir.mkdir();
 			downloadPage(imgSrcUrl, i);
 			
-			for (i = 2; i <=maxPages; i++) {
+			for (i = 2; i <=2; i++) {
 				
 				Element imgHolder=doc.getElementById("imgholder");
 				String nextSuffix=imgHolder.select("a[href]").attr("href");
 				url = BASE_URL + nextSuffix;
-				doc = Jsoup.connect(url).timeout(5 * 1000).get();
+				doc = Jsoup.connect(url).timeout(7 * 1000).get();
 				img = doc.getElementById("img");
     			System.out.print("*");
 				imgSrcUrl = new URL(img.attr("src"));
 				downloadPage(imgSrcUrl, i);
+				//addImages(imgSrcUrl);
 				
 				
 			}
@@ -98,6 +112,23 @@ public class Downloader {
 		
 	
 	}
+	public void addImages(URL imageUrl)
+	{
+		try {
+			images.add(Image.getInstance(imageUrl));
+		} catch (BadElementException e) {
+			
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+		
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			System.out.println("URL not found !");
+			e.printStackTrace();
+		}
+	}
+	
 
 	public  void setChapterLocation(String chapterLocation) {
 		Downloader.chapterLocation = chapterLocation;
@@ -105,5 +136,17 @@ public class Downloader {
 
 	public static void setChapterMap(Map<Integer, String> chapterMap) {
 		Downloader.chapterMap = chapterMap;
+	}
+
+	public List<String> getPageNameLocation() {
+		return pageNameLocaction;
+	}
+
+	public String getChapter() {
+		return chapter;
+	}
+
+	public List<Image> getImages() {
+		return images;
 	}	
 }

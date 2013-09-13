@@ -36,7 +36,7 @@ public class ChapterList {
 
 		Document doc;
 		try {
-			doc = Jsoup.connect(NARUTO_PAGE).timeout(15 * 1000).get();
+			doc = Jsoup.connect(NARUTO_PAGE).timeout(7 * 1000).get();
 
 			Element chapterListDiv = doc.getElementById("listing");
 			Elements urls = chapterListDiv.select("a[href]");
@@ -64,8 +64,8 @@ public class ChapterList {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Vector<String> getChapterListFromSerializedObject()
-			throws IOException, ClassNotFoundException {
+	public Vector<String> getChapterListFromSerializedObject()	throws IOException, ClassNotFoundException {
+		
 		Vector<String> vector = new Vector<String>();
 
 		FileInputStream fis;
@@ -101,7 +101,7 @@ public class ChapterList {
 		FileOutputStream fos = new FileOutputStream(SERIALIZED_HASHMAP);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		oos.writeObject(chapterMap);
-		System.out.println("serializeHashMap");
+		System.out.println("***********serializeHashMap****************");
 		oos.close();
 		fos.close();
 		updateLog();
@@ -116,7 +116,7 @@ public class ChapterList {
 			String currentDate = df.format(new Date());
 			writer.write(currentDate);
 			writer.close();
-			System.out.println("UpdateLog");
+			System.out.println("**************UpdateLog****************");
 
 		} catch (IOException e) {
 			System.out.println("Failed to Log Update !!");
