@@ -1,6 +1,5 @@
 package com.home.naruto;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -42,6 +41,7 @@ public class Downloader {
 		images=new ArrayList<Image>();
 			}
 
+	@SuppressWarnings("unused")
 	private void downloadPage(URL imgSrcUrl, int i) throws IOException {
 		
 		HttpURLConnection srcConnection = (HttpURLConnection) imgSrcUrl.openConnection();
@@ -86,13 +86,13 @@ public class Downloader {
 			System.out.println(maxPages);
 			URL imgSrcUrl = new URL(img.attr("src"));
 //			System.out.println(imgSrcUrl);
-			File dir=new File(chapterLocation+"/"+chapter);
-			dir.mkdir();
+//			File dir=new File(chapterLocation+"/"+chapter);
+//			dir.mkdir();
 			
 			//downloadPage(imgSrcUrl, i);
 			addImages(imgSrcUrl);
 			
-			for (i = 2; i <=maxPages; i++) {
+			for (i = 2; i <=2; i++) {
 				
 				Element imgHolder=doc.getElementById("imgholder");
 				String nextSuffix=imgHolder.select("a[href]").attr("href");

@@ -18,9 +18,11 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class ImagePdf {
 	
 	private List<Image> images;
+	private String path;
 	 
 	ImagePdf(){
 		images=new ArrayList<Image>();
+		path="";
 	}
 	
 	public void convertToPdf(List<String> imageNames,String fileName)
@@ -29,7 +31,8 @@ public class ImagePdf {
 		setupImages(imageNames);
 		Document document=new Document();
 		try {
-			PdfWriter.getInstance(document, new FileOutputStream(fileName+".pdf"));
+			System.out.println(path);
+			PdfWriter.getInstance(document, new FileOutputStream(path+fileName+".pdf"));
 			Rectangle imgDimensions;
 			document.open();
 			
@@ -82,7 +85,8 @@ public class ImagePdf {
 	private void convert(String fileName){
 		Document document=new Document();
 		try {
-			PdfWriter.getInstance(document, new FileOutputStream(fileName+".pdf"));
+			System.out.println(path);
+			PdfWriter.getInstance(document, new FileOutputStream(path+fileName+".pdf"));
 			Rectangle imgDimensions;
 			document.open();
 			
@@ -116,13 +120,11 @@ public class ImagePdf {
 			
 			
 		} catch (BadElementException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -132,6 +134,10 @@ public class ImagePdf {
 	}
 	public void setImages(List<Image> images) {
 		this.images = images;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 }

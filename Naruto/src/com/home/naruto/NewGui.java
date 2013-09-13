@@ -58,7 +58,7 @@ public class NewGui extends JFrame {
 			chapterList = chapterListObj.getChapterList();
 			latestChapter = chapterList.lastElement();
 		
-		JComboBox chapterListComboBox = new JComboBox(chapterList);
+		JComboBox<String> chapterListComboBox = new JComboBox<String>(chapterList);
 		chapterListComboBox.addActionListener(new ComboBoxListener());
 		GridBagConstraints chapterListCons = new GridBagConstraints();
 		chapterListCons.fill = GridBagConstraints.HORIZONTAL;
@@ -134,6 +134,7 @@ public class NewGui extends JFrame {
 			downloader.setChapterLocation(location.replace('\\', '/'));
 			downloader.downloadChapter(chapter);
 			imagePdf=new ImagePdf();
+			imagePdf.setPath(location.replace('\\', '/')+"/");
 			imagePdf.setImages(downloader.getImages());
 			imagePdf.convertToPdf(downloader.getChapter());
 			//imagePdf.convertToPdf(downloader.getPageNameLocation(),downloader.getChapter());
@@ -151,7 +152,7 @@ public class NewGui extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			JComboBox cb = (JComboBox) e.getSource();
+			JComboBox<?> cb = (JComboBox<?>) e.getSource();
 			selectedChapter = (String) cb.getSelectedItem();
 			System.out.println(selectedChapter);
 		}

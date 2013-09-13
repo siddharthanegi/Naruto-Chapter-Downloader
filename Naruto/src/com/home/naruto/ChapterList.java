@@ -137,7 +137,7 @@ public class ChapterList {
 			Date currentDate = new Date();
 			Calendar currentCalendar = Calendar.getInstance();
 			int diffDays = (int) ((currentDate.getTime() - updateLogDate.getTime()) / (1000 * 60 * 60 * 24));
-			System.out.println(Calendar.WEDNESDAY);
+			
 			if ((currentCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)|| diffDays > 6) {
 				System.out.println("getChapterListFromWebsite");
 				return getChapterListFromWebsite();
