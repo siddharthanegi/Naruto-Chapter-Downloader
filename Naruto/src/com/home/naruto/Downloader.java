@@ -69,7 +69,7 @@ public class Downloader {
 	public void downloadChapter(String chapterFromUI){
 		System.out.println("Before: "+pageNameLocaction.size());
 		pageNameLocaction.clear();
-		//images.clear();
+		images.clear();
 		System.out.println("After :" +pageNameLocaction.size());
 		chapter=chapterFromUI;
 		String urlSuffix=chapterMap.get(Integer.parseInt(chapterFromUI.substring(7)));
@@ -85,14 +85,10 @@ public class Downloader {
 			int maxPages = Integer.parseInt(pageNo.html());
 			System.out.println(maxPages);
 			URL imgSrcUrl = new URL(img.attr("src"));
-//			System.out.println(imgSrcUrl);
-//			File dir=new File(chapterLocation+"/"+chapter);
-//			dir.mkdir();
-			
-			//downloadPage(imgSrcUrl, i);
+
 			addImages(imgSrcUrl);
 			
-			for (i = 2; i <=2; i++) {
+			for (i = 2; i <=maxPages; i++) {
 				
 				Element imgHolder=doc.getElementById("imgholder");
 				String nextSuffix=imgHolder.select("a[href]").attr("href");

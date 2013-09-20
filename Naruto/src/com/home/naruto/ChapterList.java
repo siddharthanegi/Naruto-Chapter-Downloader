@@ -56,6 +56,7 @@ public class ChapterList {
 			Downloader.setChapterMap(chapterMap);
 			return vector;
 		} catch (IOException e1) {
+			
 			e1.printStackTrace();
 			return null;
 
@@ -136,9 +137,17 @@ public class ChapterList {
 			System.out.println(updateLogDate.toString());
 			Date currentDate = new Date();
 			Calendar currentCalendar = Calendar.getInstance();
+			Calendar logCalendar=Calendar.getInstance();
+			logCalendar.setTime(updateLogDate);
+			
 			int diffDays = (int) ((currentDate.getTime() - updateLogDate.getTime()) / (1000 * 60 * 60 * 24));
 			
-			if ((currentCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)|| diffDays > 6) {
+			boolean isNoWednesday= diffDays<6 && (currentCalendar.get(Calendar.DAY_OF_WEEK)>Calendar.WEDNESDAY
+									&& logCalendar.get(Calendar.DAY_OF_WEEK)<Calendar.WEDNESDAY);
+			
+									
+					
+			if ((currentCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) || diffDays > 6	|| isNoWednesday ) {
 				System.out.println("getChapterListFromWebsite");
 				return getChapterListFromWebsite();
 			} else {

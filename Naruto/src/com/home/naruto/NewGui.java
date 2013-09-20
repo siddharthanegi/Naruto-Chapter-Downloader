@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 
@@ -28,19 +29,24 @@ public class NewGui extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private Downloader downloader;
 	private ChapterList chapterListObj;
+	private DirectoryLocation directoryLocation;
 	private ImagePdf imagePdf;
 	private String selectedChapter;
 	private String latestChapter;
+	private String defaultLocation;
 
 	public NewGui() {
 		downloader = new Downloader();
 		chapterListObj=new ChapterList();
 		selectedChapter = "Naruto 1";
+		directoryLocation=new DirectoryLocation();
+		defaultLocation="";
 		initUI();
 	}
 
 	private void initUI() {
 
+		defaultLocation=directoryLocation.getLocation();
 		JPanel pane = new JPanel(new GridBagLayout());
 		final JFileChooser directoryChooser = new JFileChooser();
 		directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -58,7 +64,7 @@ public class NewGui extends JFrame {
 			chapterList = chapterListObj.getChapterList();
 			latestChapter = chapterList.lastElement();
 		
-		JComboBox<String> chapterListComboBox = new JComboBox<String>(chapterList);
+		JComboBox chapterListComboBox = new JComboBox(chapterList);
 		chapterListComboBox.addActionListener(new ComboBoxListener());
 		GridBagConstraints chapterListCons = new GridBagConstraints();
 		chapterListCons.fill = GridBagConstraints.HORIZONTAL;
@@ -127,10 +133,19 @@ public class NewGui extends JFrame {
 	protected void buttonAction(JFileChooser directoryChooser, String chapter) {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		if(!defaultLocation.equals(""))
+		directoryChooser.setCurrentDirectory(new File(directoryLocation.getLocation()));
+		
 		int returnVal = directoryChooser.showSaveDialog(NewGui.this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-			String location = directoryChooser.getSelectedFile().getAbsolutePath();
+			System.out.println(defaultLocation);
+			String location = directoryChooser.getSelectedFile().getAbsolutePath().replace('\\', '/');
+			
+			if(!location.equals(defaultLocation)){
+				System.out.println("Different !");
+				directoryLocation.setLocation(location);
+				defaultLocation=location;
+			}
 			downloader.setChapterLocation(location.replace('\\', '/'));
 			downloader.downloadChapter(chapter);
 			imagePdf=new ImagePdf();
@@ -152,7 +167,7 @@ public class NewGui extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			JComboBox<?> cb = (JComboBox<?>) e.getSource();
+			JComboBox cb = (JComboBox) e.getSource();
 			selectedChapter = (String) cb.getSelectedItem();
 			System.out.println(selectedChapter);
 		}
