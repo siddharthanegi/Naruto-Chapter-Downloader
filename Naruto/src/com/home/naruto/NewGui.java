@@ -37,16 +37,16 @@ public class NewGui extends JFrame {
 
 	public NewGui() {
 		downloader = new Downloader();
-		chapterListObj=new ChapterList();
+		chapterListObj = new ChapterList();
 		selectedChapter = "Naruto 1";
-		directoryLocation=new DirectoryLocation();
-		defaultLocation="";
+		directoryLocation = new DirectoryLocation();
+		defaultLocation = "";
 		initUI();
 	}
 
 	private void initUI() {
 
-		defaultLocation=directoryLocation.getLocation();
+		defaultLocation = directoryLocation.getLocation();
 		JPanel pane = new JPanel(new GridBagLayout());
 		final JFileChooser directoryChooser = new JFileChooser();
 		directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -60,10 +60,9 @@ public class NewGui extends JFrame {
 
 		Vector<String> chapterList = null;
 
-		
-			chapterList = chapterListObj.getChapterList();
-			latestChapter = chapterList.lastElement();
-		
+		chapterList = chapterListObj.getChapterList();
+		latestChapter = chapterList.lastElement();
+
 		JComboBox chapterListComboBox = new JComboBox(chapterList);
 		chapterListComboBox.addActionListener(new ComboBoxListener());
 		GridBagConstraints chapterListCons = new GridBagConstraints();
@@ -102,8 +101,7 @@ public class NewGui extends JFrame {
 		copyCons.gridwidth = 3;
 		pane.add(copyright, copyCons);
 
-		JButton latestChapterBtn = new JButton("Latest Chapter "
-				+ latestChapter);
+		JButton latestChapterBtn = new JButton("Latest Chapter " + latestChapter);
 		latestChapterBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -125,35 +123,34 @@ public class NewGui extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
-		setIconImage(getToolkit()
-				.getImage(getClass().getResource("218987.png")));
+		setIconImage(getToolkit().getImage(getClass().getResource("218987.png")));
 
 	}
 
 	protected void buttonAction(JFileChooser directoryChooser, String chapter) {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		if(!defaultLocation.equals(""))
-		directoryChooser.setCurrentDirectory(new File(directoryLocation.getLocation()));
-		
+		if (!defaultLocation.equals(""))
+			directoryChooser.setCurrentDirectory(new File(directoryLocation.getLocation()));
+
 		int returnVal = directoryChooser.showSaveDialog(NewGui.this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			System.out.println(defaultLocation);
 			String location = directoryChooser.getSelectedFile().getAbsolutePath().replace('\\', '/');
-			
-			if(!location.equals(defaultLocation)){
+
+			if (!location.equals(defaultLocation)) {
 				System.out.println("Different !");
 				directoryLocation.setLocation(location);
-				defaultLocation=location;
+				defaultLocation = location;
 			}
 			downloader.setChapterLocation(location.replace('\\', '/'));
 			downloader.downloadChapter(chapter);
-			imagePdf=new ImagePdf();
-			imagePdf.setPath(location.replace('\\', '/')+"/");
+			imagePdf = new ImagePdf();
+			imagePdf.setPath(location.replace('\\', '/') + "/");
 			imagePdf.setImages(downloader.getImages());
 			imagePdf.convertToPdf(downloader.getChapter());
-			//imagePdf.convertToPdf(downloader.getPageNameLocation(),downloader.getChapter());
-			
+			// imagePdf.convertToPdf(downloader.getPageNameLocation(),downloader.getChapter());
+
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			JOptionPane.showMessageDialog(null, "Download Complete !");
 
